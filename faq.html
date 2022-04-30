@@ -1,0 +1,135 @@
+{% extends "base.html" %} {% block title %}Frequently Asked Questions{% endblock %} {% block content
+%}
+<style>
+    .bg-dark {
+        background-color: #212529!important;
+    }
+    .faqheader{
+        text-align: center;
+    }
+    .accordion {
+        background-color: rgb(212, 212, 212);
+        color: #444;
+        cursor: pointer;
+        padding: 16px;
+        width: 100%;
+        text-align: left;
+        border: none;
+        outline: none;
+        transition: 0.8s;
+        font-size: larger;
+        font-weight: bold;
+        border-radius: 8px;
+        margin-top:6px;
+    }
+
+    /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+    .active,
+    .accordion:hover {
+        background-color: #ccc;
+    }
+
+    /* Style the accordion panel. Note: hidden by default */
+    .panel {
+        padding: 0 18px;
+        background-color: white;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease-out;
+        width: 60%;
+    }
+
+    .accordion:after {
+        content: '\02795';
+        /* Unicode for plus sign (+) */
+        font-size: 13px;
+        color: #777;
+        float: right;
+        margin-left: 5px;
+        padding-top:5px;
+    }
+
+    .active:after {
+        content: "\2796";
+        /* Unicode for minus sign (-) */
+    }
+</style>
+<div class = "faqheader">
+<h2><strong>Frequently Asked Questions</strong></h2>
+<h5>Welcome to the LeeBRA Chat Application! If you have any questions about
+    using our application, please see the Frequently Asked Questions below. </h5>
+</div>
+<button class="accordion">How Do I Create an Account?</button>
+<div class="panel">
+    <p>When loading our application, you will land on the Log In page.</p>
+    <p>To create a new account, navigate to the <strong>Sign Up</strong> button.</p>
+    <p>Once you are on the Sign Up form, you will be prompted to create a username,
+        enter your preferred display name (<i>this is what other users will see you as</i>),
+        and enter/confirm your password.
+    </p>
+</div>
+
+<button class="accordion">How Do I Log In?</button>
+<div class="panel">
+    <p>The default landing page for the LeeBRA chat application is the login page.</p>
+    <p>To log in to your account, enter your username and password into the respective fields
+        and click the <strong>Log In</strong> button.
+    </p>
+</div>
+
+<button class="accordion">What If I Forgot My Password?</button>
+<div class="panel">
+    <p>You're in luck! If you have forgotten your password, simply click the <strong>Forgot Password</strong>
+    button on the Log In page and follow the prompts to recover or change your password.</p>
+</div>
+<button class="accordion">How Do I Chat with Another Person?</button>
+<div class="panel">
+    <p>To start chatting with someone, you must first friend them.</p> 
+    
+    <p>To friend someone, first search for their username using the <strong>Search</strong> page, then click the 'Add' button
+        next to it. You may message them, but they must also add you as a friend to view your messages!
+    </p>
+</div>
+<button class="accordion">Why Can't I Chat with This Person?</button>
+<div class="panel">
+    <p>If you are unable to chat with someone, they may have blocked you.</p>
+    <p>There is no way to contact someone who has blocked you through the website..</p>
+</div>
+<button class="accordion">How Do I Block Someone?</button>
+<div class="panel">
+    <p>Simply click on their profile and select the <strong>Block</strong> button located in
+        the top-right of the screen. </p>
+    <p>You can unblock someone by searching for their name, clicking on their profile,
+        and clicking <strong>Unblock</strong>, or through your <strong>Block List</strong> located under your profile.
+    </p>
+</div>
+<button class="accordion">How Can I Delete My Chats?</button>
+<div class="panel">
+    <p>In a chat with a friend or a group chat, you may click the <strong>X</strong> button
+        to the left of your message to delete it.
+    </p>
+</div>
+<button class="accordion">I Can't See the Text! How Do I Make it Bigger?</button>
+<div class="panel">
+    <p>In the <strong>Settings</strong> page, there are options to change text size,
+    text color, and message background color!</p>
+</div>
+
+
+<script>
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        });
+    }
+</script>
+{% endblock %}
