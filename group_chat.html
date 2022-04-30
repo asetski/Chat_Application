@@ -1,0 +1,120 @@
+{% extends "base.html" %} {% block title %}Chat{% endblock %} {% block content
+    %}
+    <style>
+        .bg-dark {
+            background-color: #212529!important;
+        }
+      </style>
+<br />
+
+
+<!-- Chat Box -->
+<div style =   "position: fixed;
+                right: 0;
+                left: 0;
+                margin-right: auto;
+                margin-left: auto;
+                min-height: 10em;
+                max-width: 550px;">
+
+        <ul class="list-group list-group-flush" id="messages">
+            <div>        
+                <!-- Back Button - brings back to chat menu -->
+                <div style="float: left"><a style="width: 60px" class="btn btn-danger" id="chat" href="/"><i class="fa fa-arrow-left"></i></a></div>
+                <h5 align="center" style="padding-right: 60px">{{group.group_name}}</h5>
+                <!-- <a style="float: left; width: 120px" class="btn btn-danger" id="chat" href="/"><i class="fa fa-arrow-left"></i></a> -->
+            </div>
+        </br>
+
+        
+        <div class="overflow-auto p-3 mb-3 mb-md-0 mr-md-3 bg-light;" style="max-height: 300px; display: flex; flex-direction: column-reverse;">
+        <!-- <div class="overflow-auto p-3 mb-3 mb-md-0 mr-md-3 bg-light;" style="max-height: 300px"> -->
+            
+        {% for message in Message.query.order_by(desc(Message.id)).all() %}
+            <!-- Your messages -->
+            {% if message.group_id == group.group_id %}
+                {% if message.user_id == user.id %}
+                <li style="background-color: {{user.background}}" class="list-group-item">
+                    <div style="height:30px">
+
+                        <!-- your picture -->
+                        <a href="/profile">
+
+
+                        <div style="float: right; padding-left: 10px"><img id="cornerpic" style="width:40px" class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}"></div>
+                        <div style="float: right; color:black"><h6>{{ current_user.username }}</h6></div>
+
+                        </a>
+                        <div style="float: left; width: 5%"><a class="close" id="chat" href="/delete-message-group/{{message.id}}/{{group.group_id}}"><span aria-hidden="true">&times;</span></a></div>
+                    
+                            <!-- if the message is old, show full date and time -->
+                            {% if (message.date - datetime.datetime.now()).days < 0 %}
+                            <div style="float:left; padding-left: 10px"><small>{{(message.date - datetime.timedelta(hours=5)).strftime('%b %d, %I:%M %p')}}</small></div>
+                            <!-- if it was only yesterday -->
+                            {% elif (message.date - datetime.datetime.now()).days == -1 %}
+                                <div style="float:left; padding-left: 10px"><small>{{(message.date - datetime.timedelta(hours=5)).strftime('Yesterday, %I:%M %p')}}</small></div>
+                                <!-- if it was today, just show the time -->
+                            {% else %}
+                                <div style="float:left; padding-left: 10px"><small>{{(message.date - datetime.timedelta(hours=5)).strftime('%I:%M %p')}}</small></div>
+                            {% endif %}
+                        </div>
+
+                        <div style="overflow-wrap: break-word; color: {{user.text_color}}; font-size: {{user.text_size}}" align="right">{{message.data}}</div>
+                
+                </li>
+                {% else %}
+                <li style="background-color: {{user.background}}" class="list-group-item">
+                    <div style="height:30px">
+
+                        <!-- their picture -->
+                        {% set member_data = User.query.filter(User.id == message.user_id).first_or_404() %}
+
+                        <a href="/profile/{{member_data.username}}">
+
+                        <div style="float: left; padding-right: 10px"><img id="cornerpic" style="width:40px" class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/' + member_data.image_file) }}"></div>
+                        <div style="float: left; color: black"><h6>{{ member_data.username }}</h6></div>
+                        
+                        </a>
+
+                    
+                        <!-- if the message is old, show full date and time -->
+                        {% if (message.date - datetime.datetime.now()).days < 0 %}
+                            <div style="float:right"><small>{{(message.date - datetime.timedelta(hours=5)).strftime('%b %d, %I:%M %p')}}</small></div>
+                            <!-- if it was only yesterday -->
+                            {% elif (message.date - datetime.datetime.now()).days == -1 %}
+                                <div style="float:right"><small>{{(message.date - datetime.timedelta(hours=5)).strftime('Yesterday, %I:%M %p')}}</small></div>
+                                <!-- if it was today, just show the time -->
+                        {% else %}
+                            <div style="float:right"><small>{{(message.date - datetime.timedelta(hours=5)).strftime('%I:%M %p')}}</small></div>
+                        {% endif %}
+                    </div>
+
+                    <div style="overflow-wrap: break-word; color: {{user.text_color}}; font-size: {{user.text_size}}" align="left">{{message.data}}</div>
+                </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        </div>
+    </ul>
+
+
+    <form method="POST">
+        <textarea name="message" id="message" class="form-control"></textarea>
+        <br /> 
+        <div style="float: right">
+            <!-- Send Button  with audio effect-->
+            <audio id="sound_send" src="/static/audio/send.wav" preload="auto"></audio>
+            <button type="submit" class="btn btn-primary" onclick="document.getElementById('sound_send').play();"><i style="padding-top:5px; width: 35px" class="material-icons">send</i></button>
+            
+            <!-- <a class="btn btn-primary" id="send" href="/send-chat/{{group.group_name}}/{{message}}">Send</a> -->
+        </div>
+    </form>
+    <div style="float: left;"><a class="btn btn-outline-info btn-sm" id="chat" href="/add-members/{{group.group_id}}">Add members</a></div>
+    <div style="float: left; padding-left: 10px"><a class="btn btn-outline-danger btn-sm" id="chat" href="/leave-group/{{group.group_id}}/{{current_user.id}}">Leave group</a></div>
+
+</div>
+    
+<br />
+
+{% endblock %}
+    
