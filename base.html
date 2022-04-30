@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <style>
+     #cornerpic {
+        object-fit: cover;
+        width:40px;
+        height:40px;
+    }
+  </style>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      crossorigin="anonymous"
+    />
+
+    <title>{% block title %}Home{% endblock %}</title>
+    <!-- jquery-3.6.0.js used for sound effects-->
+    <script type="text/javascript" src="/static/jquery-3.6.0.js"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbar"
+      >
+        <span class="navbar-toggler-icon"></span>
+
+      </button>
+      <div class="collapse navbar-collapse" id="navbar">
+        <div class="navbar-nav">
+          {% if current_user.is_authenticated %}
+            <a class="nav-item nav-link" id="chat" href="/">Chat</a>
+            <a class="nav-item nav-link" id="search" href="/search">Search</a>
+            <a class="nav-item nav-link" id="settings" href="/settings">Settings</a>
+            <a class="nav-item nav-link" id="faq" href="/faq">FAQ</a>
+            <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+          {% else %}
+            <a class="nav-item nav-link" id="login" href="/login">Log In</a>
+            <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+            <a class="nav-item nav-link" id="faq" href="/faq">FAQ</a>
+          {% endif %}
+        </div>
+      </div>
+
+      
+        <div class="navbar-nav">
+          {% if current_user.is_authenticated %}
+            <a class="nav-item nav-link" id="chat" href="/profile">{{current_user.username}}&nbsp;&nbsp;<img id="cornerpic" style="width: 40px;" class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}"></a>
+          {% endif %}
+        </div>
+      
+    </nav>
+
+    
+
+    {% with messages = get_flashed_messages(with_categories=true)%}
+      {% if messages %}
+        {% for category, message in messages %}
+          {% if category == 'error' %}
+            <div class="alert alert-danger alert-dismissable fade show" role="alert">
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            {% else %}
+            <div class="alert alert-success alert-dismissable fade show" role="alert">
+              {{message}}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <br />
+
+    <div class="container">{% block content %} {% endblock %}</div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='index.js') }}"
+    ></script>
+
+    <!-- <script
+    src="{{ url_for('static', filename='script.js') }}"
+  ></script> -->
+
+
+    
+  </body>
+</html>
