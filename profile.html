@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .bg-dark {
+        background-color: #212529!important;
+    }
+  </style>
+<style>
+    #profilepic {
+        object-fit: cover;
+        width:130px;
+        height:130px;
+    }
+</style>
+    <div class="content-section">
+      <div class="media">
+        <img id=profilepic style="width:130px" class="rounded-circle account-img" src="{{ image_file }}">
+        <div style="padding-left: 20px" class="media-body">
+          <h2 class="account-heading">{{ current_user.username }}</h2>
+          {% if current_user.status %}
+            <p class="text-secondary">{{ current_user.status }}</p>
+          {% endif %}
+        </div>
+      </div>
+    <br />
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Account Info</legend>
+                <div class="form-group">
+                    {{ form.username.label(class="form-control-label") }}
+
+                    {% if form.username.errors %}
+                        {{ form.username(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.username(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.status.label(class="form-control-label") }}
+
+                    {% if form.status.errors %}
+                        {{ form.username(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.status.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.status(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.picture.label() }}
+                    {{ form.picture(class="form-control-file") }}
+                    {% if form.picture.errors %}
+                        {% for error in form.picture.errors %}
+                            <span class="text-danger">{{ error }}</span></br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+    <br/>
+    <br/>
+
+
+    <div style="width: 100%">
+
+    <div style="float:left; width: 50%; max-width: 400px; padding-left: 30px">
+    <!-- Request List -->
+    <li style="height: 70px" class="list-group-item"><h4 style="padding-top:5px" align="center">Friend Requests</h4></li>
+    {% set requestList = Request.query.filter(Request.receiver_id == current_user.id).all() %}
+
+    {% if requestList %}
+        {% for request in requestList %}
+            {% set sender = User.query.filter(User.id == request.user_id).first() %}
+                <li class="list-group-item" style="height: 70px">
+                    <div style="float: left"><a href="/profile/{{sender.username}}"><img id='cornerpic' style="width:40px" class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/' + sender.image_file) }}"></a></div>
+                    <div style="float: left"><a class="btn btn-link" id="chat" href="/profile/{{sender.username}}">{{sender.username}}</a></div>
+                    <div style="padding-left:10px"><a style="float: right; padding-top: 6px" class="btn btn-outline-danger btn-sm" href="/deny-friend/{{sender.id}}">Deny</a></div>
+                    <div style="float: right; padding-right:5px"><a style="float: right; padding-top: 6px;" class="btn btn-outline-success btn-sm" href="/add-friend/{{sender.id}}">Add</a></div>
+                </li>
+        {% endfor %}
+    {% endif %}
+
+    </div>
+
+    <div style="float:right; width: 50%; max-width: 400px; padding-right: 30px">
+    <!-- Block List -->
+    <li style="height: 70px" class="list-group-item"><h4 style="padding-top:5px" align="center">Block List</h4></li>
+    {% if current_user.block_list %}
+        {% for blocked in current_user.block_list %}
+        <li class="list-group-item" style="height: 70px">
+            <div style="float: left"><a href="/profile/{{User.query.filter(User.id == blocked.blocked_id).first_or_404().username}}"><img id='cornerpic' style="width:40px" class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/' + User.query.filter(User.id == blocked.blocked_id).first_or_404().image_file) }}"></a></div>
+                <div style="float: left"><a class="btn btn-link" id="chat" href="/profile/{{User.query.filter(User.id == blocked.blocked_id).first_or_404().username}}">{{User.query.filter(User.id == blocked.blocked_id).first_or_404().username}}</a></div>
+                <div align="right"><a class="btn btn-outline-danger btn-sm" href="/remove-block-profile/{{blocked.blocked_id}}">Unblock</a></div>
+
+            </li>
+        {% endfor %}
+    {% endif %}
+    </div>
+
+    </div>
+
+
+    
+{% endblock content %}
